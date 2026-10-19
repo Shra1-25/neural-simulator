@@ -1,7 +1,7 @@
-# Learning to Act in Imagination
+# What If, and Why
 
-Companion page to a research proposal: a neural simulator that learns physics from a physics engine and
-answers the questions a rescue robot must ask before it acts (predict, infer, intervene, explain).
+Preliminary demo and results (ongoing work) for a research proposal: a neural simulator that learns physics
+to predict, infer, intervene and explain, shown on a rubble-rescue task.
 
 Page: https://shra1-25.github.io/neural-simulator/
 
