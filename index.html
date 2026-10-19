@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Learning to Act in Imagination</title>
+  <meta name="description" content="A neural simulator that learns physics from a physics engine and answers the questions a robot must ask before it acts: a rubble-rescue demo.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="hero wrap">
+  <h1>Learning to Act in Imagination</h1>
+  <p class="sub">A neural simulator that learns physics from a physics engine and answers the questions a robot must ask before it acts.</p>
+  <p class="who">Shravan Chaudhari &middot; Johns Hopkins University</p>
+  <p class="meta">Companion page to a research proposal &middot; results as of 19 October 2026</p>
+</header>
+
+<main class="wrap">
+
+<section>
+  <h2>The scene</h2>
+  <p class="lead">A rescue robot must clear rubble without bringing the pile down on a trapped person. It sees each piece's shape and position, but not which pieces are secretly heavy or pinned. Every result below comes from held-out piles simulated in PhysX (NVIDIA Isaac Sim), which serves as the ground truth.</p>
+  <figure class="card">
+    <img class="full" src="assets/img/piles.png" alt="Two held-out rubble piles over a red figure (top) and two simple training parts (bottom), rendered in Isaac Sim.">
+    <figcaption>Top: two held-out test piles over the trapped figure (red). Bottom: training parts. The learned simulators train only on simple parts like these and never see a test pile.</figcaption>
+  </figure>
+</section>
+
+<section>
+  <h2>Four questions, one learned simulator</h2>
+  <p class="lead">The learned simulator predicts how every piece moves. The robot uses it to answer four kinds of question.</p>
+  <div class="questions">
+
+    <div class="card">
+      <div class="q-head"><span class="tag">Predict</span><p class="q">Will this pull bring the pile down?</p></div>
+      <p class="q-note">Left to right in each clip: PhysX, regression, flow matching. The learned simulators here are told the hidden masses. The robot's own estimate, made without them, is in each caption.</p>
+      <div class="grid-2">
+        <figure><video src="assets/clips/collapse.mp4" poster="assets/posters/collapse.jpg" muted loop playsinline preload="metadata" controls></video>
+          <figcaption>Pulling this brick brings the pile down. The robot said 100%.</figcaption></figure>
+        <figure><video src="assets/clips/safe.mp4" poster="assets/posters/safe.jpg" muted loop playsinline preload="metadata" controls></video>
+          <figcaption>Pulling this debris leaves the pile standing. The robot said 0%.</figcaption></figure>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="q-head"><span class="tag">Infer</span><p class="q">Is this stuck piece heavy, or pinned?</p></div>
+      <p class="q-note">A short test pull. The robot compares how far the piece moved with what the simulator predicts for each guess about the hidden mass or pin.</p>
+      <div class="grid-2 narrow">
+        <figure><video src="assets/clips/test_heavy.mp4" poster="assets/posters/test_heavy.jpg" muted loop playsinline preload="metadata" controls></video>
+          <figcaption>Firm test pull, the brick does not move. Verdict: heavy. Truth: heavy.</figcaption></figure>
+        <figure><video src="assets/clips/test_pinned.mp4" poster="assets/posters/test_pinned.jpg" muted loop playsinline preload="metadata" controls></video>
+          <figcaption>Strong test pull, the slab does not move. Verdict: pinned. Truth: pinned.</figcaption></figure>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="q-head"><span class="tag">Intervene</span><p class="q">The pile starts to slide. Brace, or let go?</p></div>
+      <p class="q-note">One moment, two interventions, both simulated in PhysX from the same state.</p>
+      <figure><video src="assets/clips/brace.mp4" poster="assets/posters/brace.jpg" muted loop playsinline preload="metadata" controls></video>
+        <figcaption>Letting go (left) does not stop the slide. Bracing (right) does. Here the robot rated both as safe and would have let go. Across all piles, its choice stops the pile 92% of the time.</figcaption></figure>
+    </div>
+
+    <div class="card">
+      <div class="q-head"><span class="tag">Explain</span><p class="q">What if it had pulled another piece instead?</p></div>
+      <p class="q-note">After seeing what one pull did, the robot keeps only the hidden masses and pins that explain it, then predicts a different pull from the same start. Its answers are in the chart below.</p>
+    </div>
+
+  </div>
+</section>
+
+<section>
+  <h2>How often the robot decides like the physics engine</h2>
+  <p class="lead">Share of answers that match PhysX on 204 held-out piles (2,543 pieces). The robot does not know the hidden masses or pins.</p>
+  <div class="legend">
+    <span><i class="key-dot" style="background:var(--s1)"></i>Regression</span>
+    <span><i class="key-dot" style="background:var(--s2)"></i>Flow matching</span>
+    <span><i class="key-tick"></i>Always the most common answer</span>
+    <span><i class="key-line"></i>90% target</span>
+  </div>
+  <div class="card"><div id="chart-agree"></div>
+    <details><summary>Table</summary>
+      <table>
+        <thead><tr><th>Question</th><th class="n">Regression</th><th class="n">Flow matching</th><th class="n">Most common answer</th></tr></thead>
+        <tbody id="table-agree"></tbody>
+      </table>
+    </details>
+  </div>
+</section>
+
+<section>
+  <h2>Fewer attempts, no collapse</h2>
+  <p class="lead">The robot tries to free one piece, pulling the piece it is most sure is safe first. Test pulls are its backward reasoning: they tell heavy from pinned before it commits.</p>
+  <div class="legend">
+    <span><i class="key-bar" style="background:var(--s1)"></i>Regression</span>
+    <span><i class="key-bar" style="background:var(--s2)"></i>Flow matching</span>
+    <span><i class="key-bar" style="background:var(--base)"></i>Random order (no simulator)</span>
+  </div>
+  <div class="grid-2">
+    <div class="card"><div id="chart-collapse"></div></div>
+    <div class="card"><div id="chart-pulls"></div></div>
+  </div>
+  <details><summary>Table</summary>
+    <table>
+      <thead><tr><th>Robot</th><th class="n">Piles brought down</th><th class="n">Pulls per freed piece</th></tr></thead>
+      <tbody id="table-attempts"></tbody>
+    </table>
+  </details>
+</section>
+
+<section>
+  <h2>Every learned simulator, side by side</h2>
+  <p class="lead">The same held-out pulls predicted by each model, next to PhysX. Columns: PhysX, regression, flow matching, block diffusion. The models are told the hidden masses here.</p>
+  <figure class="card"><video src="assets/clips/matrix.mp4" poster="assets/posters/matrix.jpg" muted loop playsinline preload="metadata" controls></video></figure>
+</section>
+
+<section>
+  <h2>Where it still fails</h2>
+  <p class="lead">Pinned pieces are the weak spot: when nothing moves under the strongest test pull, the robot says pinned only 62% of the time.</p>
+  <div class="grid-2">
+    <figure class="card"><video src="assets/clips/miss.mp4" poster="assets/posters/miss.jpg" muted loop playsinline preload="metadata" controls></video>
+      <figcaption>Missed collapse. The robot said 0%, and the pile came down.</figcaption></figure>
+    <figure class="card"><video src="assets/clips/false_alarm.mp4" poster="assets/posters/false_alarm.jpg" muted loop playsinline preload="metadata" controls></video>
+      <figcaption>False alarm. The robot said 100%, and the pile stayed up.</figcaption></figure>
+  </div>
+</section>
+
+<section>
+  <h2>Setup</h2>
+  <ul class="setup">
+    <li><b>Ground truth.</b> PhysX in NVIDIA Isaac Sim, run with the true hidden masses and pins.</li>
+    <li><b>What the robot is told.</b> Every piece's shape, size and position, and a mass guessed from its look. Not which pieces are heavier or pinned.</li>
+    <li><b>Test piles.</b> Two structures over a red figure with loose debris on top. Some pieces are 3 to 6 times heavier than they look, and about a third of the piles have one pinned slab or beam. None is used for training.</li>
+    <li><b>Uncertainty.</b> The robot draws 12 guesses about the hidden masses and pins and asks the simulator 4 times for each. The share of predictions in which the pile comes down is its stated chance.</li>
+    <li><b>Test pulls.</b> Short pulls, gentle then firm then strong, until the piece moves 5 cm.</li>
+  </ul>
+</section>
+
+</main>
+<footer class="wrap">&copy; 2026 Shravan Chaudhari &middot; Simulations in NVIDIA Isaac Sim (PhysX)</footer>
+<div id="tip" role="status" aria-live="polite"></div>
+<script src="site.js"></script>
+</body>
+</html>
