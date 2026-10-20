@@ -114,6 +114,19 @@
 </section>
 
 <section>
+  <h2>Against video world models</h2>
+  <p class="lead">The same pulls given to video world models: Wan2.2 (5B and A14B) and Cosmos-Predict2.5 (2B and 14B). Each gets the first frame and a text prompt describing the pull. Columns: PhysX, the learned simulator, then the video models.</p>
+  <div class="questions">
+    <figure class="card"><video src="assets/clips/vm_pull_a.mp4" poster="assets/posters/vm_pull_a.jpg" muted loop playsinline preload="metadata" controls></video>
+      <figcaption>Pull an orange block. In PhysX the pile stays up, and the learned simulator agrees. The video models add robot arms and figures or scatter the pile.</figcaption></figure>
+    <figure class="card"><video src="assets/clips/vm_pull_b.mp4" poster="assets/posters/vm_pull_b.jpg" muted loop playsinline preload="metadata" controls></video>
+      <figcaption>Another pile. In PhysX the block slides out and the pile stays up. The learned simulator keeps the pile standing, while the video models tip the slab, resize pieces or invent new objects.</figcaption></figure>
+    <figure class="card"><video src="assets/clips/vm_pull_a_told.mp4" poster="assets/posters/vm_pull_a_told.jpg" muted loop playsinline preload="metadata" controls></video>
+      <figcaption>The first pull again, with a prompt that also states what happens in PhysX. The video models still change the pile. (Panels marked "not generated" were not run.)</figcaption></figure>
+  </div>
+</section>
+
+<section>
   <h2>Where it still fails</h2>
   <p class="lead">Pinned pieces are the weak spot: when nothing moves under the strongest test pull, the robot says pinned only 62% of the time.</p>
   <div class="grid-2">
