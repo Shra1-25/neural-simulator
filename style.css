@@ -127,3 +127,25 @@ footer { color: var(--muted); font-size: 13px; padding: 26px 0 44px; text-align:
 }
 .grid-2.narrow { max-width: 640px; margin: 0 auto; }
 .chart .t-ink, .chart text.q2 { fill: var(--ink); }
+
+/* the four capabilities (9 Nov 2026 layout) */
+nav.caps { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; margin: 0 0 6px; }
+nav.caps a {
+  display: inline-flex; align-items: center; gap: 8px; text-decoration: none; color: var(--ink);
+  background: var(--surface); border: 1px solid var(--ring); border-radius: 999px; padding: 6px 14px; font-weight: 600; font-size: 15px;
+}
+nav.caps a:hover { border-color: var(--accent); }
+nav.caps .n, .cap-head .n {
+  display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: 50%;
+  background: var(--accent); color: #fff; font-size: 13px; font-weight: 700;
+}
+.cap-head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin: 0 0 12px; }
+.cap-head .n { width: 30px; height: 30px; font-size: 15px; align-self: center; }
+.cap-head h2 { margin: 0; }
+.cap-head .q { font-size: 19px; font-weight: 500; color: var(--ink-2); margin: 0; }
+.take { margin: 12px 0 4px; max-width: 860px; }
+.stat { margin: 0; font-size: 14px; color: var(--muted); max-width: 860px; }
+.card.clip { padding: 10px; }
+.intro { text-align: center; }
+.intro .lead { margin: 0 auto; }
+footer { color: var(--muted); font-size: 13px; padding: 26px 20px 40px; border-top: 1px solid var(--grid); }
