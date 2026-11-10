@@ -1,4 +1,4 @@
-# What If, and Why
+# Rehearse Before You Act
 
 Companion page for a research proposal: a neural simulator that learns physics to predict, intervene, infer and
 explain. One example of each on held-out rubble piles, the physics engine (PhysX in NVIDIA Isaac Sim) next to the
